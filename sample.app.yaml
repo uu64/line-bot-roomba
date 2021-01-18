@@ -1,0 +1,13 @@
+env: standard
+
+# runtime setting
+runtime: go114
+instance_class: F1
+
+# scaling setting
+automatic_scaling:
+  max_instances: 1
+
+# env vars
+env_variables:
+  LINE_BOT_TOKEN: 
