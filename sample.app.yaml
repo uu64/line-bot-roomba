@@ -11,3 +11,4 @@ automatic_scaling:
 # env vars
 env_variables:
   LINE_BOT_TOKEN: 
+  LINE_BOT_SECRET: 
