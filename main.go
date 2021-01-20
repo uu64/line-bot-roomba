@@ -14,7 +14,7 @@ import (
 var bot *linebot.Client
 
 type iftttReqBody struct {
-	Event string `json:event`
+	Event string `json:"event"`
 }
 
 func init() {
@@ -59,7 +59,8 @@ func iftttHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if body.Event == "start-cleaning" {
-		if _, err := bot.BroadcastMessage(linebot.NewTextMessage("掃除おわった")).Do(); err != nil {
+		to := os.Getenv("LINE_BOT_PRIVATE_ID")
+		if _, err := bot.PushMessage(to, linebot.NewTextMessage("掃除おわった")).Do(); err != nil {
 			log.Print(err)
 		}
 	}
@@ -85,7 +86,10 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				if strings.Contains(message.Text, "ルンちゃん") {
+				if strings.Contains(message.Text, "ルンちゃん") ||
+					strings.Contains(message.Text, "るんちゃん") ||
+					strings.Contains(message.Text, "ルンさん") ||
+					strings.Contains(message.Text, "るんさん") {
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("ほい")).Do(); err != nil {
 						log.Print(err)
 					}
