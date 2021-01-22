@@ -58,9 +58,16 @@ func iftttHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if body.Event == "start-cleaning" {
+	if body.Event == "finish-cleaning" {
 		to := os.Getenv("LINE_BOT_PRIVATE_ID")
 		if _, err := bot.PushMessage(to, linebot.NewTextMessage("掃除おわった")).Do(); err != nil {
+			log.Print(err)
+		}
+	}
+
+	if body.Event == "be-stuck" {
+		to := os.Getenv("LINE_BOT_PRIVATE_ID")
+		if _, err := bot.PushMessage(to, linebot.NewTextMessage("たす...け...て......")).Do(); err != nil {
 			log.Print(err)
 		}
 	}
