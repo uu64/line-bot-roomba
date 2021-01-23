@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  bot:
+    build: dockerfiles/bot
+    environment:
+      GO111MODULE: 'on'
+    volumes:
+      - .:/go/src/github.com/uu64/line-bot-roomba
+    ports:
+      - 8080:8080
+    restart: 'no'
+    command: make serve
