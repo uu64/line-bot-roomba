@@ -6,7 +6,9 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -66,6 +68,22 @@ func push(text string) error {
 func reply(text string, replyToken string) error {
 	message := linebot.NewTextMessage(text)
 	if _, err := bot.ReplyMessage(replyToken, message).Do(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func callRoomba(eventName string) error {
+	var endpoint = "https://maker.ifttt.com/trigger"
+
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return err
+	}
+
+	iftttKey := os.Getenv("IFTTT_KEY")
+	u.Path = path.Join(u.Path, eventName, "with", "key", iftttKey)
+	if _, err := http.Get(u.String()); err != nil {
 		return err
 	}
 	return nil
@@ -148,8 +166,18 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 					"るんさん",
 				}
 				for _, nickname := range nicknames {
+					if message.Text == nickname+"掃除して" {
+						if err := reply("やるぞ！！！", event.ReplyToken); err != nil {
+							logger.error(fmt.Sprintf("failed to send a reply messsage: %+v", err))
+						}
+						if err := callRoomba("request-cleaning"); err != nil {
+							logger.error(fmt.Sprintf("failed to request cleaning: %+v", err))
+						}
+						return
+					}
+
 					if strings.Contains(message.Text, nickname) {
-						if err := reply("ほい", event.ReplyToken); err != nil {
+						if err := reply("呼んだ？", event.ReplyToken); err != nil {
 							logger.error(fmt.Sprintf("failed to send a reply messsage: %+v", err))
 						}
 						return
