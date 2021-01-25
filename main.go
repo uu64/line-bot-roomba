@@ -166,8 +166,8 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 					"るんさん",
 				}
 				for _, nickname := range nicknames {
-					if message.Text == nickname+"掃除して" {
-						if err := reply("やるぞ！！！", event.ReplyToken); err != nil {
+					if message.Text == nickname+"掃除おねがい" {
+						if err := reply("やるぞ！！", event.ReplyToken); err != nil {
 							logger.error(fmt.Sprintf("failed to send a reply messsage: %+v", err))
 						}
 						if err := callRoomba("request-cleaning"); err != nil {
@@ -177,7 +177,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 					}
 
 					if strings.Contains(message.Text, nickname) {
-						if err := reply("呼んだ？", event.ReplyToken); err != nil {
+						if err := reply("ほい？", event.ReplyToken); err != nil {
 							logger.error(fmt.Sprintf("failed to send a reply messsage: %+v", err))
 						}
 						return
